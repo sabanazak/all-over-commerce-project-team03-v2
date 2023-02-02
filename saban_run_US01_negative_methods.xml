@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Blue Rental Car Project" verbose="1" >
+<test name="Run Methods" preserve-order="true">
+    <classes>
+        <class name="team03.tests.saban.US_01">
+            <methods>
+                <include name="test_US01_TC02" />
+                <include name="test_US01_TC03" />
+                <include name="test_US01_TC04" />
+                <include name="test_US01_TC05" />
+            </methods>
+        </class>
+
+    </classes>
+</test>
+</suite>
