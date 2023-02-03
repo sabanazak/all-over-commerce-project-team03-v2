@@ -3,13 +3,18 @@ package team03.tests.saban;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import team03.pages.*;
 import team03.pages.ShopPage;
 import team03.tests.AllOverCommerceUtils;
+import team03.utilities.ConfigReader;
 import team03.utilities.Driver;
 import team03.utilities.JSUtils;
+import team03.utilities.ReusableMethods;
 
 public class US_08 {
     HomePage homePage;
@@ -17,7 +22,7 @@ public class US_08 {
     WishlistPage wishlistPage;
     ShopPage shopPage;
     AccountDetailsPage accountDetailsPage;
-
+    SideShoppingCardPage shoppingCardPage;
     private void clearWishlist() {
         try{
             for(WebElement removeButton:wishlistPage.removeFromWishlistButtons){
@@ -27,10 +32,11 @@ public class US_08 {
         catch (Exception e) { }
     }
 
+    //TC01 : The user should be able to add her/his favorite items to her/his Wishlist.
     @Test
     public void test_US08_TC01(){
 
-        AllOverCommerceUtils.loginAsUser();
+        PrivateUtilies.loginTestUser1();
         homePage=new HomePage();
         myAccountPage=new MyAccountPage();
         wishlistPage=new WishlistPage();
@@ -48,11 +54,17 @@ public class US_08 {
             Driver.waitForVisibility(wishlistPage.btnGoShop,5);
             JSUtils.clickElementByJS(wishlistPage.btnGoShop);
         }
-        WebElement firstProduct=shopPage.listOfAddToWishListIcons.get(0);
-        WebElement lastProduct=shopPage.listOfAddToWishListIcons.get(shopPage.listOfAddToWishListIcons.size()-1);
 
+        Driver.waitForPageToLoad(10);
+        WebElement firstProduct=shopPage.listOfAddToWishListIcons.get(2);
+        Actions actions=new Actions(Driver.getDriver());
+        actions.moveToElement(firstProduct);
         JSUtils.clickElementByJS(firstProduct);
-        JSUtils.clickElementByJS(lastProduct);
+
+        Driver.wait(4);
+        WebElement secondProduct=shopPage.listOfAddToWishListIcons.get(3);
+        actions.moveToElement(secondProduct);
+        JSUtils.clickElementByJS(secondProduct);
 
         homePage.linkWishlist.click();
 
@@ -60,10 +72,11 @@ public class US_08 {
 
     }
 
+    //TC02 : The user should be able to view the items added to the Wishlist.
     @Test
     public void test_US08_TC02(){
 
-        AllOverCommerceUtils.loginAsUser();
+        PrivateUtilies.loginTestUser1();
 
         homePage=new HomePage();
         myAccountPage=new MyAccountPage();
@@ -74,50 +87,73 @@ public class US_08 {
         homePage.linkWishlist.click();
         Assert.assertTrue(wishlistPage.addedItemsTableRows.size()>0);
 
-
-       for(WebElement quickViewButton:wishlistPage.quickViewButtons){
-           JSUtils.clickElementByJS(quickViewButton);
-           Driver.wait(3); // increase second if fails
-           Assert.assertTrue(wishlistPage.categoryName.isDisplayed());
-           JSUtils.clickElementByJS(wishlistPage.productAttributesContainerCloseButton);
-           Driver.wait(2);
-        }
     }
 
+    //TC03 : The user should be able to view  the attributes of the items on their Wishlist.(QUICK VIEW)
     @Test
-    public void test_US08_TC03(){
+    public void test_US08_TC03() {
 
-        AllOverCommerceUtils.login("sazak","TechProEd");
+        PrivateUtilies.loginTestUser1();
 
+        homePage = new HomePage();
+        myAccountPage = new MyAccountPage();
+        wishlistPage = new WishlistPage();
+        shopPage = new ShopPage();
+
+        Driver.getDriver().navigate().refresh();  //to overcome Stale Element Reference Exception
+        homePage.linkWishlist.click();
+        Assert.assertTrue(wishlistPage.addedItemsTableRows.size() > 0);
+
+
+        for (WebElement quickViewButton : wishlistPage.quickViewButtons) {
+            JSUtils.clickElementByJS(quickViewButton);
+            Driver.wait(3); // increase second if fails
+            Assert.assertTrue(wishlistPage.categoryName.isDisplayed());
+            JSUtils.clickElementByJS(wishlistPage.productAttributesContainerCloseButton);
+            Driver.wait(2);
+        }
+    }
+    //TC04 : The user should be able to add the items on their Wishlist to their cart and purchase.
+    @Test
+    public void test_US08_TC04(){
         homePage=new HomePage();
         myAccountPage=new MyAccountPage();
         wishlistPage=new WishlistPage();
         shopPage=new ShopPage();
+        shoppingCardPage=new SideShoppingCardPage();
 
-        Driver.getDriver().navigate().refresh();  //to overcome Stale Element Reference Exception
+        PrivateUtilies.loginTestUser1();
+
+        Driver.getDriver().navigate().refresh();
         homePage.linkWishlist.click();
+        wishlistPage=new WishlistPage();
         Assert.assertTrue(wishlistPage.addedItemsTableRows.size()>0);
 
 
        //Because when click first addCartButton, page refreshes and wishlistPage.addToCartButtons is gone stale
-       // So below is not workinf
+       // So below is not working
        /*for(WebElement addCartButton:wishlistPage.addToCartButtons) {
             JSUtils.clickElementByJS(addCartButton);
             Driver.wait(2);
             Driver.getDriver().navigate().back();
         }*/
-
-        By pageLocator = By.tagName("//a[.='Add to cart']");
-        int pageCount = Driver.getDriver().findElements(pageLocator).size();
-        for (int i = 0; i < pageCount; i++) {
-            WebElement addCartButton = Driver.getDriver().findElements(pageLocator).get(i);
+        Driver.getDriver().navigate().refresh();
+        System.out.println(Driver.getDriver().getPageSource());
+        By buttonLocator = By.tagName("//a[.='Add to cart']");
+        int buttonCount = Driver.getDriver().findElements(buttonLocator).size();
+        for (int i = 0; i < buttonCount; i++) {
+            WebElement addCartButton = Driver.getDriver().findElements(buttonLocator).get(i);
             JSUtils.clickElementByJS(addCartButton);
-            // at this point pageLink is gone stale!
-
+            // at this point buttonLink is gone stale!
+            System.out.println(addCartButton.getText());
             // do some stuff
-            Driver.wait(2);
-            Driver.getDriver().navigate().back();
+            Driver.wait(1);
+            //Driver.getDriver().navigate().back();
         }
+
+//        homePage.linkCart.click();
+//        Assert.assertTrue(shoppingCardPage.btnCheckoutSide.isDisplayed());
+//        shoppingCardPage.btnCheckoutSide.click();
     }
 
 
@@ -133,32 +169,10 @@ public class US_08 {
 
 
 
-    @Test
-    public void test_AccountDetail_Biography(){
-        AllOverCommerceUtils.loginAsUser();
-
-        homePage=new HomePage();
-        myAccountPage=new MyAccountPage();
-        wishlistPage=new WishlistPage();
-        shopPage=new ShopPage();
-        accountDetailsPage=new AccountDetailsPage();
-
-        homePage.linkSignOut.click();
-
-        JSUtils.clickElementByJS(myAccountPage.menuAccountDetails);
-
-        Driver.getDriver().switchTo().frame("user_description_ifr");
-
-        JavascriptExecutor js = (JavascriptExecutor)Driver.getDriver();
-        js.executeScript("arguments[0].textContent = arguments[1];", accountDetailsPage.inputBiography, "Biyografi alanini buradan doldurabilirsiniz");
-
-        //OR
-        //String biyografi="bla bla";
-        //String command="arguments[0].textContent = '" + biyografi + "';";
-        //JSUtils.executeJScommand(accountDetailsPage.inputBiography,command);
-
-        Driver.getDriver().switchTo().defaultContent();
-
+    @AfterTest
+    public void tearDown() {
+        ReusableMethods.waitFor(4);
+        //Driver.closeDriver();
     }
 
 }
