@@ -9,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import team03.pages.*;
+import team03.pages.ShopPage;
 import team03.tests.AllOverCommerceUtils;
 import team03.utilities.ConfigReader;
 import team03.utilities.Driver;
