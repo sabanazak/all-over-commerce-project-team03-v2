@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import team03.pages.*;
+import team03.pages.ShopPage;
 import team03.tests.AllOverCommerceUtils;
 import team03.utilities.Driver;
 import team03.utilities.JSUtils;
