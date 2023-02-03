@@ -1,17 +1,16 @@
 package team03.tests.saban;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 import team03.pages.*;
-import team03.pages.ShopPage;
-import team03.tests.AllOverCommerceUtils;
-import team03.utilities.ConfigReader;
+import team03.pages.sabanpages.HomePage;
+import team03.pages.sabanpages.MyAccountPage;
+import team03.pages.sabanpages.ShopPage;
+import team03.pages.sabanpages.WishlistPage;
 import team03.utilities.Driver;
 import team03.utilities.JSUtils;
 import team03.utilities.ReusableMethods;
