@@ -68,6 +68,7 @@ public class US_06 {
 
         //Then verify product count is displayed
         Assert.assertTrue(shopPage_bs.cartCount.isDisplayed());
+        // 
 
         //4-The amount of products in the cart should be adjustable by the user.
         //clicks view cart.
