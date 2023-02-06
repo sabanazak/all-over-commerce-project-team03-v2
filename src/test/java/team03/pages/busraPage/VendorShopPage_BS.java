@@ -55,6 +55,10 @@ public class VendorShopPage_BS {
     @FindBy(linkText = "#19987")
     public WebElement orderSummary;
 
+    @FindBy(xpath = "//li[@class=' alert alert-simple alert-icon alert-close-top alert-danger']")
+    public WebElement alert;
+
+
 
 
 }

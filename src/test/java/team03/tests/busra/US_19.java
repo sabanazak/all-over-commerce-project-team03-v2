@@ -1,5 +1,8 @@
 package team03.tests.busra;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import team03.pages.busraPage.*;
@@ -9,7 +12,6 @@ import team03.utilities.JSUtils;
 import team03.utilities.ReusableMethods;
 
 public class US_19 {
-
 
     /*
     User should be able to shop as a Vendor. (My Account > Orders > Browse Product)
@@ -29,6 +31,8 @@ public class US_19 {
     VendorShopPage_BS vendorShopPage_bs= new VendorShopPage_BS();
     BillingAddress_BS billingAddress_bs= new BillingAddress_BS();
 
+
+
     @Test
     public void shopVendor() {
 
@@ -42,7 +46,8 @@ public class US_19 {
         loginPage_bs.btnSignIn.click();
         ReusableMethods.waitFor(3);
 
-       vendorShopPage_bs.search.sendKeys("Tshirt");
+       // User should be able to shop as a Vendor. (My Account > Orders > Browse Product)
+        vendorShopPage_bs.search.sendKeys("Tshirt");
         ReusableMethods.waitFor(3);
 
         //And user clicks on search button
@@ -125,6 +130,99 @@ public class US_19 {
         String orderSummary = vendorShopPage_bs.orderSummary.getText();
         System.out.println(orderSummary);
         
+
+    }
+
+    @Test
+    public void shopVendor2(){
+
+        //Given user goes to "https://allovercommerce.com" page
+        Driver.getDriver().get(ConfigReader.getProperty("all_over_commerce_url"));
+
+        homePage_bs.linkSignIn.click();
+        loginPage_bs.login_and_register_Container.click();
+        loginPage_bs.inputSigninUsername.sendKeys("team03.vendor1");
+        loginPage_bs.inputSiginPassword.sendKeys("TechProEd");
+        loginPage_bs.btnSignIn.click();
+        ReusableMethods.waitFor(3);
+
+        // User should be able to shop as a Vendor. (My Account > Orders > Browse Product)
+        vendorShopPage_bs.search.sendKeys("Tshirt");
+        ReusableMethods.waitFor(3);
+
+        //And user clicks on search button
+        JSUtils.clickElementByJS(vendorShopPage_bs.searchButton);
+        ReusableMethods.waitFor(3);
+
+        //The user should be able to add the product they are looking for to their cart. (ADD TO CART)
+        vendorShopPage_bs.addToCart.click();
+
+        //verify added to cart
+        String addedToCart= vendorShopPage_bs.addedToCart.getText();
+        Assert.assertTrue(addedToCart.contains("“Tshirt” has been added to your cart."));
+
+        //3-User should see the items that have been added to the cart.
+        //And user clicks on cart
+        JSUtils.clickElementByJS(vendorShopPage_bs.cart);
+
+        //clicks view cart.
+        JSUtils.clickElementByJS(vendorShopPage_bs.viewCart);
+        ReusableMethods.waitFor(3);
+
+        // clicks checkout
+        JSUtils.clickElementByJS(vendorShopPage_bs.checkout);
+
+        // verify  Billing Address is visible
+        Assert.assertTrue(vendorShopPage_bs.billingAddress.isDisplayed());
+
+        //Billing adress
+        billingAddress_bs.inputBillingFirstName.clear();
+
+        billingAddress_bs.inputBillingLastName.clear();
+        billingAddress_bs.inputBillingLastName.sendKeys("Sentuna");
+
+        billingAddress_bs.inputBillingCompany.clear();
+        billingAddress_bs.inputBillingCompany.sendKeys("Dolek");
+
+        Driver.selectAnItemFromDropdown(billingAddress_bs.selectBillingCountry,"United States(US)");
+
+        billingAddress_bs.inputBillingAddress1.clear();
+        billingAddress_bs.inputBillingAddress1.sendKeys("9");
+
+        billingAddress_bs.inputBillingAddress2.clear();
+        billingAddress_bs.inputBillingAddress2.sendKeys("Venture");
+
+        billingAddress_bs.inputBillingCity.clear();
+        billingAddress_bs.inputBillingCity.sendKeys("Miami");
+
+        Driver.selectAnItemFromDropdown(billingAddress_bs.selectBillingState, "Florida");
+
+        billingAddress_bs.inputBillingZipCode.clear();
+        billingAddress_bs.inputBillingZipCode.sendKeys("90210");
+
+        billingAddress_bs.inputBillingPhone.clear();
+        billingAddress_bs.inputBillingPhone.sendKeys("4167889310");
+
+        billingAddress_bs.inputBillingEmail.clear();
+        billingAddress_bs.inputBillingEmail.sendKeys("bdolek17@gmail.com");
+
+        //Select payment method
+        JSUtils.clickElementByJS(vendorShopPage_bs.paymentMethod);
+
+        //Place the order
+        JSUtils.clickElementByJS(vendorShopPage_bs.placeOrder);
+        ReusableMethods.waitFor(3);
+
+
+        vendorShopPage_bs.alert.isDisplayed();
+
+
+//        driver.findElement(By.xpath("//li[@class=' alert alert-simple alert-icon alert-close-top alert-danger']"));
+//        ReusableMethods.waitFor(3);
+//        String text = driver.switchTo().alert().getText();
+//        System.out.println(text);
+
+
 
     }
 }

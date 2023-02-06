@@ -1,7 +1,7 @@
 package team03.tests;
 
-import team03.pages.HomePage;
-import team03.pages.LoginPage;
+import team03.pages.sabanpages.HomePage;
+import team03.pages.sabanpages.LoginPage;
 import team03.utilities.ConfigReader;
 import team03.utilities.Driver;
 
