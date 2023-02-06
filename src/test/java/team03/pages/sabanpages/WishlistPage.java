@@ -36,6 +36,11 @@ public class WishlistPage {
     @FindBy(xpath = "//a[.='Add to cart']")
     public List<WebElement> addToCartButtons;
 
+    //Dummy
+    @FindBy(xpath = "(//td[@class=\"product-add-to-cart\"]/div/a)[1]")
+    public WebElement addToCardButton1;
+    @FindBy(xpath = "(//td[@class=\"product-add-to-cart\"]/div/a)[2]")
+    public WebElement addToCardButton2;
     @FindBy(xpath = "//a[contains(@class,'remove_from_wishlist ')]")
     public List<WebElement> removeFromWishlistButtons;
 
