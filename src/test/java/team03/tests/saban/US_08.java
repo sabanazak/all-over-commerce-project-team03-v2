@@ -1,19 +1,20 @@
 package team03.tests.saban;
 
+import com.github.javafaker.Faker;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
-import team03.pages.*;
-import team03.pages.sabanpages.HomePage;
-import team03.pages.sabanpages.MyAccountPage;
-import team03.pages.sabanpages.ShopPage;
-import team03.pages.sabanpages.WishlistPage;
+import team03.pages.sabanpages.*;
 import team03.utilities.Driver;
 import team03.utilities.JSUtils;
 import team03.utilities.ReusableMethods;
+
+import java.time.Duration;
 
 public class US_08 {
     HomePage homePage;
@@ -22,6 +23,10 @@ public class US_08 {
     ShopPage shopPage;
     AccountDetailsPage accountDetailsPage;
     SideShoppingCardPage shoppingCardPage;
+    ShoppingCardPage cardPage;
+    CheckoutPage checkoutPage;
+    OrderComplatePage orderComplatePage;
+    Faker faker;
     private void clearWishlist() {
         try{
             for(WebElement removeButton:wishlistPage.removeFromWishlistButtons){
@@ -112,6 +117,8 @@ public class US_08 {
             Driver.wait(2);
         }
     }
+
+
     //TC04 : The user should be able to add the items on their Wishlist to their cart and purchase.
     @Test
     public void test_US08_TC04(){
@@ -120,10 +127,13 @@ public class US_08 {
         wishlistPage=new WishlistPage();
         shopPage=new ShopPage();
         shoppingCardPage=new SideShoppingCardPage();
+        cardPage=new ShoppingCardPage();
+        checkoutPage=new CheckoutPage();
+        orderComplatePage=new OrderComplatePage();
 
         PrivateUtilies.loginTestUser1();
 
-        Driver.getDriver().navigate().refresh();
+        Driver.wait(3);
         homePage.linkWishlist.click();
         wishlistPage=new WishlistPage();
         Assert.assertTrue(wishlistPage.addedItemsTableRows.size()>0);
@@ -137,41 +147,92 @@ public class US_08 {
             Driver.getDriver().navigate().back();
         }*/
         Driver.getDriver().navigate().refresh();
-        System.out.println(Driver.getDriver().getPageSource());
-        By buttonLocator = By.tagName("//a[.='Add to cart']");
-        int buttonCount = Driver.getDriver().findElements(buttonLocator).size();
-        for (int i = 0; i < buttonCount; i++) {
-            WebElement addCartButton = Driver.getDriver().findElements(buttonLocator).get(i);
-            JSUtils.clickElementByJS(addCartButton);
-            // at this point buttonLink is gone stale!
-            System.out.println(addCartButton.getText());
-            // do some stuff
-            Driver.wait(1);
-            //Driver.getDriver().navigate().back();
-        }
+        Driver.wait(4);
+        //Dummy
+        By locatorAddToCardButton1 = By.xpath("(//td[@class='product-add-to-cart']/div/a)[1]");
+        By locatorAddToCardButton2 = By.xpath("(//td[@class='product-add-to-cart']/div/a)[1]");
+        JSUtils.clickElementByJS(wishlistPage.addToCardButton1);
+        Driver.wait(4);
+        Driver.waitForPageToLoad(10);
+        wishlistPage.addToCardButton2=Driver.getDriver().findElement(locatorAddToCardButton2);
+        JSUtils.clickElementByJS(wishlistPage.addToCardButton2);
 
-//        homePage.linkCart.click();
-//        Assert.assertTrue(shoppingCardPage.btnCheckoutSide.isDisplayed());
-//        shoppingCardPage.btnCheckoutSide.click();
+        Driver.wait(3);
+        homePage.linkCart.click();
+        Driver.wait(2);
+        shoppingCardPage.btnCheckoutSide.click();
+        Driver.wait(2);
+        clearAddressForm();
+
+        faker=new Faker();
+
+        Driver.wait(1);
+        checkoutPage.inputBillingFirstName.sendKeys("Saban");
+        Driver.wait(1);
+        checkoutPage.inputBillingLastName.sendKeys("AZAK");
+        Driver.wait(1);
+        checkoutPage.inputBillingCompany.sendKeys("Company Name");
+        Driver.wait(1);
+        Driver.selectByVisibleText(checkoutPage.selectBillingCountry,"Canada");
+        checkoutPage.inputBillingAddress1.sendKeys(faker.address().streetAddress());
+        checkoutPage.inputBillingCity.sendKeys(faker.address().city());
+        Driver.selectByVisibleText(checkoutPage.selectBillingState,"Ontario");
+        checkoutPage.inputBillingPostcode.sendKeys("N2T2N2");
+        checkoutPage.inputBillingPhone.sendKeys(faker.phoneNumber().cellPhone());
+
+        //JSUtils.clickElementByJS(checkoutPage.chkShipToDifferentAddress);
+
+        checkoutPage.inputShippingFirstName.sendKeys("Saban");
+        Driver.wait(1);
+        checkoutPage.inputShippingLastName.sendKeys("AZAK");
+        Driver.wait(1);
+        checkoutPage.inputShippingCompany.sendKeys("Company Name");
+        Driver.wait(1);
+        Driver.selectByVisibleText(checkoutPage.selectShippingCountry,"Canada");
+        checkoutPage.inputShippingAddress1.sendKeys(faker.address().streetAddress());
+        checkoutPage.inputShippingCity.sendKeys(faker.address().city());
+        Driver.selectByVisibleText(checkoutPage.selectShippingState,"Ontario");
+        checkoutPage.inputShippingPostcode.sendKeys("N2T2N2");
+        checkoutPage.inputOrderComments.sendKeys("Please make it gift package");
+        JSUtils.clickElementByJS(checkoutPage.radioPayAtDoor);
+        Driver.wait(2);
+        checkoutPage.btnPlaceOrder.click();
+
+        Driver.waitForVisibility(orderComplatePage.orderComplateMessage,10);
+        Assert.assertTrue(orderComplatePage.orderComplateMessage.isDisplayed());
+
     }
 
-
-
-
-
-
-
-
-
-
-
+    private void clearAddressForm() {
+        //------CLEAR--------------
+        checkoutPage.inputBillingFirstName.clear();
+        checkoutPage.inputBillingLastName.clear();
+        checkoutPage.inputBillingCompany.clear();
+        Driver.selectByIndex(checkoutPage.selectBillingCountry,1);
+        checkoutPage.inputBillingAddress1.clear();
+        checkoutPage.inputBillingAddress2.clear();
+        checkoutPage.inputBillingCity.clear();
+        checkoutPage.inputBillingPostcode.clear();
+        checkoutPage.inputBillingPhone.clear();
+        JSUtils.clickElementByJS(checkoutPage.chkShipToDifferentAddress);
+        checkoutPage.inputShippingFirstName.clear();
+        checkoutPage.inputShippingLastName.clear();
+        checkoutPage.inputShippingCompany.clear();
+        Driver.selectByIndex(checkoutPage.selectShippingCountry,1);
+        checkoutPage.inputShippingAddress1.clear();
+        checkoutPage.inputShippingAddress2.clear();
+        checkoutPage.inputShippingCity.clear();
+        checkoutPage.inputShippingPostcode.clear();
+        checkoutPage.inputOrderComments.clear();
+        //-------------------------
+    }
 
 
 
     @AfterTest
     public void tearDown() {
         ReusableMethods.waitFor(4);
-        //Driver.closeDriver();
+        Driver.closeDriver();
     }
 
 }
