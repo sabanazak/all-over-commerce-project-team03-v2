@@ -26,13 +26,16 @@ public class US_20_create_coupons {
         Driver.getDriver().get(ConfigReader.getProperty("all_over_commerce_url"));
         homePage.linkSignIn.click();
         ReusableMethods.waitFor(2);
-        homePage.inputSigninUsername.sendKeys(ConfigReader.getProperty("vendor_user_name"));
+        homePage.inputSigninUsername.sendKeys("TechProEd");
         ReusableMethods.waitFor(2);
-        homePage.inputSiginPassword.sendKeys(ConfigReader.getProperty("vendor_password"));
+        homePage.inputSiginPassword.sendKeys("TechProEd");
         homePage.btnSignIn.click();
+
+        ReusableMethods.waitFor(2);
 
         //go to my account page
         homePage.btnSignOut.click();
+       // clickElementByJS( homePage.btnSignOut);
 
         //go to store manager page
         myAccountPage.btnStoreManager.click();

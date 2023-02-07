@@ -28,7 +28,7 @@ public class US_9_Register_Vendor {
         homePage.becomeVendorButton.click();
 
         //4-User types a e-mail
-        vendorRegistrationPage.vendorEmail.sendKeys(ConfigReader.getProperty("vendor_email"));
+        vendorRegistrationPage.vendorEmail.sendKeys("team03.vendor1@gmail.com");
 
         //5-User Clicks “RE-SEND CODE” BUTTON
         // vendorRegistrationPage.reSendCodeButton.click();
